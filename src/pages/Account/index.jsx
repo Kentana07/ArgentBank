@@ -3,9 +3,13 @@ import "./style.css";
 const Account = () => {
   return (
     <main className="main bg-dark2">
-      <div class="heading">
-        <h1>Welcome back<br />Tony Jarvis!</h1>
-        <button class="edit-button">Edit Name</button>
+      <div className="heading">
+        <h1>
+          Welcome back
+          <br />
+          Tony Jarvis!
+        </h1>
+        <button className="edit-button">Edit Name</button>
       </div>
       <h2 className="sr-only">Accounts</h2>
 

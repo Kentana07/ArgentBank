@@ -1,15 +1,25 @@
 .main-nav-item {
-    text-decoration: none;
-    margin-right: 1rem;
-  }
-  .main-nav-item:hover {
-    text-decoration: underline;
+  text-decoration: none;
+  margin-right: 1rem;
+}
+.main-nav-item:hover {
+  text-decoration: underline;
 }
 .main-nav a {
-    font-weight: bold;
-    color: #2c3e50;
+  font-weight: bold;
+  color: #2c3e50;
 }
 .main-nav-item {
-    text-decoration: none;
-    margin-right: 0.5rem;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+.logout-button {
+  border: none;
+  background-color: transparent;
+  color: #2c3e50;
+  font-size: 16px;
+  cursor: pointer;
+}
+.logout-button:hover {
+  text-decoration: underline;
 }
