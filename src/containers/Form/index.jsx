@@ -27,7 +27,7 @@ const Form = () => {
               <label htmlFor="remember-me">Remember me</label>
             </div>
   
-            <button className="sign-in-button">Sign In</button>
+            <a className="sign-in-button" href="/user">Sign In</a>
             {/* <!-- PLACEHOLDER DUE TO STATIC SITE -->
                   <a href="./user.html" class="sign-in-button">Sign In</a>
                   <!-- SHOULD BE THE BUTTON BELOW -->

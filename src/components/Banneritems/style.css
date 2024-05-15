@@ -1,4 +1,10 @@
 .feature-item {
     flex: 1;
     padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .feature-item p {
+    text-align: center;
   }

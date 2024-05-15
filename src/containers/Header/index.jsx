@@ -6,7 +6,7 @@ import Loginandout from '../../components/Log-in_out';
 function Header(){
     return (
         <header>
-            <nav>
+            <nav className='main-nav'>
                 <Link to="/"className='logo-link'><img src={logo} alt="logo argent bank" className='logo' />
                 </Link>
                 <div>

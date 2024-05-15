@@ -6,7 +6,7 @@ function Loginandout() {
 
   return (
     <div>
-        <a class="main-nav-item" href="./sign-in.html">
+        <a class="main-nav-item" href="/signin">
           <i class="fa fa-user-circle"></i>
           Sign In
         </a>

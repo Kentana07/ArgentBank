@@ -1,4 +1,16 @@
-
+.bg-dark2 {
+  background-color: #12002b;
+}
+.main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.heading {
+  color: #fff;
+  margin-bottom: 2rem;
+  text-align: center;
+}
 .account {
     display: flex;
     justify-content: space-between;
@@ -34,6 +46,7 @@
   .account-content-wrapper {
     width: 100%;
     flex: 1;
+    color: #2c3e50;
   }
   
   .edit-button {
@@ -43,12 +56,6 @@
     font-weight: bold;
     padding: 10px;
   }
-  
-  .header {
-    color: #fff;
-    margin-bottom: 2rem;
-  }
-  
   .transaction-button {
     display: block;
     width: 100%;
