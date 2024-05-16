@@ -23,12 +23,12 @@ function Loginandout() {
     <div>
       {isAuthenticated ? ( // Condition pour afficher le contenu en fonction de l'état d'authentification
         <div className="main-nav-item">
-          <i className="fa fa-user-circle"></i>
-          {userName} {/* Affichage du nom d'utilisateur */}
-          <button onClick={handleLogout} className="logout-button">
-            Sign Out
-          </button>
-        </div>
+        <i className="fa fa-user-circle"></i>
+        {userName && <span>{userName}</span>}
+        <button onClick={handleLogout} className="logout-button">
+          Sign Out
+        </button>
+      </div>      
       ) : (
         <a className="main-nav-item" href="/signin">
           <i className="fa fa-user-circle"></i>

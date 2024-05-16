@@ -7,12 +7,12 @@ const loginApi = "http://localhost:3001/api/v1/user/login"; // URL de l'API de c
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
-    // Fonction asynchrone qui reçoit les informations d'identification
+    // Fonction asynchrone 
     try {
-      const response = await axios.post(loginApi, { email, password }); // Requête POST pour se connecter avec les informations fournies
-      return response.data; // Retourne les données de la réponse
+      const response = await axios.post(loginApi, { email, password }); // Requête POST pour se connecter 
+      return response.data; // données de la réponse
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message); // En cas d'erreur, retourne le message d'erreur de la réponse ou l'erreur elle-même
+      return rejectWithValue(error.response?.data?.message || error.message); // retourne le message d'erreur 
     }
   }
 );
@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth", // Nom du slice
   initialState: {
-    user: null, // Données de l'utilisateur connecté
+    user: null, // Données de l'utilisateur 
     isAuthenticated: false, // Indicateur d'authentification
     status: "idle", // État de la requête
     error: null, // Message d'erreur
@@ -41,11 +41,10 @@ const authSlice = createSlice({
         state.status = "loading"; // Définition de l'état à "loading"
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        // Réussite de la requête de connexion
-        state.status = "succeeded"; // Définition de l'état à "succeeded"
-        state.user = action.payload; // Stockage des données de l'utilisateur connecté
-        state.isAuthenticated = true; // Définition de l'indicateur d'authentification à true
-      })
+        state.status = "succeeded";
+        state.user = action.payload.body; // Stockez toutes les données utilisateur retournées
+        state.isAuthenticated = true;
+      })      
       .addCase(loginUser.rejected, (state, action) => {
         // Échec de la requête de connexion
         state.status = "failed"; // Définition de l'état à "failed"
