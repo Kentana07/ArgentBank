@@ -1,16 +1,89 @@
 import "./style.css";
-//modification dans header pour le logout et name
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { setUserData } from "../../redux/authSlice";
+
 const Account = () => {
+  const [newUserName, setNewUserName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const userData = useSelector((state) => state.auth.userData);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setUserData());
+  }, [dispatch]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Token is missing from localStorage");
+      }
+
+      const response = await axios.put(
+        "http://localhost:3001/api/v1/user/profile",
+        { userName: newUserName },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Username updated successfully");
+        closeModal();
+        dispatch(setUserData()); // Mettre à jour les données utilisateur après la modification du nom d'utilisateur
+      } else {
+        console.error("Failed to update username");
+      }
+    } catch (error) {
+      console.error("Error updating username:", error.message);
+    }
+  };
+
   return (
     <main className="main bg-dark2">
       <div className="heading">
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {userData ? userData.userName : "User"}!
         </h1>
-        <button className="edit-button">Edit Name</button>
+        <button className="edit-button" onClick={openModal}>
+          Edit Name
+        </button>
       </div>
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close-button" onClick={closeModal}>
+              &times;
+            </span>
+            <form onSubmit={handleSubmit}>
+              <label htmlFor="newName">New Name:</label>
+              <input
+                type="text"
+                id="newName"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+              />
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      )}
       <h2 className="sr-only">Accounts</h2>
 
       <section className="account">

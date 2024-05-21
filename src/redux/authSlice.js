@@ -1,58 +1,90 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const loginApi = "http://localhost:3001/api/v1/user/login"; // URL de l'API de connexion
+const loginApi = "http://localhost:3001/api/v1/user/login";
 
-// Création d'une action asynchrone loginUser avec createAsyncThunk
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
-    // Fonction asynchrone 
     try {
-      const response = await axios.post(loginApi, { email, password }); // Requête POST pour se connecter 
-      return response.data; // données de la réponse
+      const response = await axios.post(loginApi, { email, password });
+      const { token } = response.data.body;
+      return token;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message); // retourne le message d'erreur 
+      return rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
 
-// Création d'un slice pour gérer l'état de l'authentification
+export const setUserData = createAsyncThunk(
+  "auth/setUserData",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { token } = getState().auth;
+      if (!token) {
+        throw new Error("Token is missing");
+      }
+      const profileResponse = await axios.post(
+        "http://localhost:3001/api/v1/user/profile",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return profileResponse.data.body;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
-  name: "auth", // Nom du slice
+  name: "auth",
   initialState: {
-    user: null, // Données de l'utilisateur 
-    isAuthenticated: false, // Indicateur d'authentification
-    status: "idle", // État de la requête
-    error: null, // Message d'erreur
+    token: null,
+    isAuthenticated: false,
+    status: "idle",
+    error: null,
+    userData: null, // Ajout de l'état pour stocker les données utilisateur
   },
   reducers: {
     logout: (state) => {
-      // Reducer pour la déconnexion de l'utilisateur
-      state.user = null; // Réinitialisation des données de l'utilisateur
-      state.isAuthenticated = false; // Réinitialisation de l'indicateur d'authentification
+      state.token = null;
+      state.isAuthenticated = false;
+      state.status = "disconnected";
+      state.userData = null; // Réinitialiser les données utilisateur lors de la déconnexion
+      localStorage.removeItem("authToken");
     },
   },
   extraReducers: (builder) => {
-    // Gestion des actions asynchrones
     builder
-      .addCase(loginUser.pending, (state) => {
-        // En attente de la requête de connexion
-        state.status = "loading"; // Définition de l'état à "loading"
-      })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.body; // Stockez toutes les données utilisateur retournées
+        state.token = action.payload;
         state.isAuthenticated = true;
-      })      
-      .addCase(loginUser.rejected, (state, action) => {
-        // Échec de la requête de connexion
-        state.status = "failed"; // Définition de l'état à "failed"
-        state.error = action.payload; // Stockage du message d'erreur
-      });
+        state.error = null;
+        localStorage.setItem("authToken", action.payload);
+        console.log("Token stored:", localStorage.getItem("authToken"));
+      })
+      .addCase(setUserData.fulfilled, (state, action) => {
+        state.userData = action.payload; // Stocker les données utilisateur dans l'état Redux
+      })
+      .addMatcher(
+        (action) =>
+          action.type.endsWith("/rejected") &&
+          action.type.includes("auth"),
+        (state, action) => {
+          state.status = "failed";
+          state.error = action.payload;
+        }
+      );
   },
 });
 
-export const { logout } = authSlice.actions; // Extraction de l'action de déconnexion
+export const { logout } = authSlice.actions;
 
-export default authSlice.reducer; // Export du reducer du slice
+export default authSlice.reducer;

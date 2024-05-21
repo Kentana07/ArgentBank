@@ -1,7 +1,6 @@
 import Form from "../../containers/Form";
-import "./style.css";
 
-function Login() {
+const Login = () => {
   return (
     <>
       <main>
@@ -9,6 +8,6 @@ function Login() {
       </main>
     </>
   );
-}
+};
 
 export default Login;
