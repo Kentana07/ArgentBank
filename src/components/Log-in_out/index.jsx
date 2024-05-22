@@ -18,7 +18,7 @@ function Loginandout() {
   };
   return (
     <div>
-      {isAuthenticated ? ( // Condition pour afficher le contenu en fonction de l'état d'authentification
+      {isAuthenticated ? ( 
         <div className="main-nav-item">
           <Link to="/user">UserProfile    </Link>
           <Link to="/signin">SignIn   </Link>

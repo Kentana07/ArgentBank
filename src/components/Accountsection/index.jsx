@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./style.css"; // Créez un fichier CSS pour ce composant si nécessaire
+import "./style.css"; 
 
 const AccountSection = ({ title, amount, description, accountId }) => {
   return (
