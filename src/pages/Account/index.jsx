@@ -1,35 +1,48 @@
-import "./style.css";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setUserData } from "../../redux/authSlice";
+import AccountSection from "../../components/Accountsection";
+import "./style.css";
 
 const Account = () => {
+  // State to hold the new username and modal visibility
   const [newUserName, setNewUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Retrieve user data from the Redux store
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
 
+  // Fetch user data when the component mounts
   useEffect(() => {
     dispatch(setUserData());
   }, [dispatch]);
 
+  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  // Function to close 
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
+  // Handle form submission to update the username
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("authToken");
+      // Retrieve the token from localStorage or sessionStorage
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
       if (!token) {
-        throw new Error("Token is missing from localStorage");
+        throw new Error("Token is missing from both storages");
       }
+      console.log("Using token to update username:", token);
 
+      // Make an API request to update the username
       const response = await axios.put(
         "http://localhost:3001/api/v1/user/profile",
         { userName: newUserName },
@@ -41,10 +54,11 @@ const Account = () => {
         }
       );
 
+      // Handle the response from the API
       if (response.status === 200) {
         console.log("Username updated successfully");
         closeModal();
-        dispatch(setUserData()); // Mettre à jour les données utilisateur après la modification du nom d'utilisateur
+        dispatch(setUserData());
       } else {
         console.error("Failed to update username");
       }
@@ -86,38 +100,24 @@ const Account = () => {
       )}
       <h2 className="sr-only">Accounts</h2>
 
-      <section className="account">
-        <div className="account-content-wrapper">
-          <h3 className="account-title">Argent Bank Checking (x8349)</h3>
-          <p className="account-amount">$2,082.79</p>
-          <p className="account-amount-description">Available Balance</p>
-        </div>
-        <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
-        </div>
-      </section>
-
-      <section className="account">
-        <div className="account-content-wrapper">
-          <h3 className="account-title">Argent Bank Savings (x6712)</h3>
-          <p className="account-amount">$10,928.42</p>
-          <p className="account-amount-description">Available Balance</p>
-        </div>
-        <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
-        </div>
-      </section>
-
-      <section className="account">
-        <div className="account-content-wrapper">
-          <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
-          <p className="account-amount">$184.30</p>
-          <p className="account-amount-description">Current Balance</p>
-        </div>
-        <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
-        </div>
-      </section>
+      <AccountSection
+        title="Argent Bank Checking"
+        amount="2,082.79"
+        description="Available Balance"
+        accountId="x8349"
+      />
+      <AccountSection
+        title="Argent Bank Savings"
+        amount="10,928.42"
+        description="Available Balance"
+        accountId="x6712"
+      />
+      <AccountSection
+        title="Argent Bank Credit Card"
+        amount="184.30"
+        description="Current Balance"
+        accountId="x8349"
+      />
     </main>
   );
 };
