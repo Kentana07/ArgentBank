@@ -6,43 +6,43 @@ import AccountSection from "../../components/Accountsection";
 import "./style.css";
 
 const Account = () => {
-  // State to hold the new username and modal visibility
+  // stocker le nouveau nom d'utilisateur et la visibilité du modal
   const [newUserName, setNewUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Retrieve user data from the Redux store
+  // Récupérer les données utilisateur depuis le store Redux
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
 
-  // Fetch user data when the component mounts
+  // Récupérer les données utilisateur lorsque le composant est monté
   useEffect(() => {
     dispatch(setUserData());
   }, [dispatch]);
 
-  // Function to open the modal
+  // Fonction pour ouvrir le modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close 
+  // Fonction pour fermer le modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // Handle form submission to update the username
+  // Gérer la soumission du formulaire pour mettre à jour le nom d'utilisateur
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Retrieve the token from localStorage or sessionStorage
+      // Récupérer le token depuis localStorage ou sessionStorage
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
       if (!token) {
-        throw new Error("Token is missing from both storages");
+        throw new Error("Le token est absent des deux stockages");
       }
-      console.log("Using token to update username:", token);
+      console.log("Utilisation du token pour mettre à jour le nom d'utilisateur :", token);
 
-      // Make an API request to update the username
+      // Effectuer une requête API pour mettre à jour le nom d'utilisateur
       const response = await axios.put(
         "http://localhost:3001/api/v1/user/profile",
         { userName: newUserName },
@@ -54,16 +54,16 @@ const Account = () => {
         }
       );
 
-      // Handle the response from the API
+      // Gérer la réponse de l'API
       if (response.status === 200) {
-        console.log("Username updated successfully");
+        console.log("Nom d'utilisateur mis à jour avec succès");
         closeModal();
         dispatch(setUserData());
       } else {
-        console.error("Failed to update username");
+        console.error("Échec de la mise à jour du nom d'utilisateur");
       }
     } catch (error) {
-      console.error("Error updating username:", error.message);
+      console.error("Erreur lors de la mise à jour du nom d'utilisateur :", error.message);
     }
   };
 
@@ -71,12 +71,12 @@ const Account = () => {
     <main className="main bg-dark2">
       <div className="heading">
         <h1>
-          Welcome back
+          Bienvenue de retour
           <br />
-          {userData ? userData.userName : "User"}!
+          {userData ? userData.userName : "Utilisateur"} !
         </h1>
         <button className="edit-button" onClick={openModal}>
-          Edit Name
+          Modifier le nom
         </button>
       </div>
       {isModalOpen && (
@@ -86,36 +86,36 @@ const Account = () => {
               &times;
             </span>
             <form onSubmit={handleSubmit}>
-              <label htmlFor="newName">New Name:</label>
+              <label htmlFor="newName">Nouveau nom :</label>
               <input
                 type="text"
                 id="newName"
                 value={newUserName}
                 onChange={(e) => setNewUserName(e.target.value)}
               />
-              <button type="submit">Save</button>
+              <button type="submit">Enregistrer</button>
             </form>
           </div>
         </div>
       )}
-      <h2 className="sr-only">Accounts</h2>
+      <h2 className="sr-only">Comptes</h2>
 
       <AccountSection
-        title="Argent Bank Checking"
+        title="Compte courant Argent Bank"
         amount="2,082.79"
-        description="Available Balance"
+        description="Solde disponible"
         accountId="x8349"
       />
       <AccountSection
-        title="Argent Bank Savings"
+        title="Épargne Argent Bank"
         amount="10,928.42"
-        description="Available Balance"
+        description="Solde disponible"
         accountId="x6712"
       />
       <AccountSection
-        title="Argent Bank Credit Card"
+        title="Carte de crédit Argent Bank"
         amount="184.30"
-        description="Current Balance"
+        description="Solde actuel"
         accountId="x8349"
       />
     </main>

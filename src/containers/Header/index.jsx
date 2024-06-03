@@ -6,6 +6,7 @@ import Loginandout from "../../components/Log-in_out";
 import { useSelector } from "react-redux";
 
 function Header() {
+  // Retrieve the username from the Redux store
   const userName = useSelector((state) => state.auth.userData?.userName);
 
   return (
@@ -17,7 +18,6 @@ function Header() {
         <div className="main-nav">
           {userName && <span>{userName}</span>}
           <Loginandout />
-          
         </div>
       </nav>
     </header>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authSlice"; // Import de l'action logout depuis le slice Redux authSlice
 import "./style.css";
@@ -18,10 +18,10 @@ function Loginandout() {
   };
   return (
     <div>
-      {isAuthenticated ? ( 
+      {isAuthenticated ? (
         <div className="main-nav-item">
-          <Link to="/user">UserProfile    </Link>
-          <Link to="/signin">SignIn   </Link>
+          <Link to="/user">UserProfile </Link>
+          <Link to="/signin">SignIn </Link>
           <i className="fa fa-user-circle"></i>
           <button onClick={handleLogout} className="logout-button">
             Sign Out
@@ -29,7 +29,9 @@ function Loginandout() {
         </div>
       ) : (
         <div className="main-nav-item">
-          <Link to="/signin" className="nav-link">Sign In</Link>
+          <Link to="/signin" className="nav-link">
+            Sign In
+          </Link>
           <i className="fa fa-user-circle"></i>
         </div>
       )}

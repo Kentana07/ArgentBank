@@ -1,16 +1,15 @@
-// Import des modules nécessaires
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// URL de l'API de connexion
+// API pour la connexion
 const loginApi = "http://localhost:3001/api/v1/user/login";
 
-// Création d'une action asynchrone pour la connexion de l'utilisateur
+// Thunk pour gérer l'authentification de l'utilisateur
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password, rememberMe }, { rejectWithValue }) => {
     try {
-      // Appel à l'API pour la connexion avec l'email et le mot de passe fournis
+      // Envoi de la requête de connexion à l'API
       const response = await axios.post(loginApi, { email, password });
       const { token } = response.data.body;
 
@@ -22,17 +21,20 @@ export const loginUser = createAsyncThunk(
         sessionStorage.setItem("authToken", token);
         console.log("Token stored in sessionStorage:", token);
       }
-      return token; // Retourne le token
+
+      // Retourne le token si la requête est réussie
+      return token;
     } catch (error) {
+      // Rejette la promesse avec un message d'erreur approprié
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
 
-// Création d'une action asynchrone pour récupérer les données de l'utilisateur
+// Thunk pour récupérer les données de l'utilisateur à partir du token stocké
 export const setUserData = createAsyncThunk(
   "auth/setUserData",
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       // Récupération du token depuis localStorage ou sessionStorage
       const token =
@@ -43,7 +45,7 @@ export const setUserData = createAsyncThunk(
       }
       console.log("Using token to fetch user data:", token);
 
-      // Appel à l'API pour récupérer les données de l'utilisateur avec le token
+      // Envoi de la requête pour récupérer les données de l'utilisateur
       const profileResponse = await axios.post(
         "http://localhost:3001/api/v1/user/profile",
         {},
@@ -53,18 +55,20 @@ export const setUserData = createAsyncThunk(
           },
         }
       );
-      return profileResponse.data.body; // Retourne les données de l'utilisateur
+
+      // Retourne les données de l'utilisateur si la requête est réussie
+      return profileResponse.data.body;
     } catch (error) {
+      // message d'erreur approprié
       return rejectWithValue(error.message);
     }
   }
 );
 
-// Création d'un slice Redux pour gérer l'authentification
+// Création du slice pour l'authentification
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    // Initialisation de l'état
     token:
       localStorage.getItem("authToken") ||
       sessionStorage.getItem("authToken") ||
@@ -77,9 +81,8 @@ const authSlice = createSlice({
     userData: null,
   },
   reducers: {
-    // Reducer pour la déconnexion de l'utilisateur
+    // Réducteur pour déconnecter l'utilisateur
     logout: (state) => {
-      // Mise à jour de l'état lors de la déconnexion
       state.token = null;
       state.isAuthenticated = false;
       state.status = "disconnected";
@@ -90,9 +93,8 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Gestion des actions asynchrones avec createAsyncThunk
     builder
-      // Gestion de l'action loginUser.fulfilled (connexion réussie)
+      // Gère l'état après une connexion réussie
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.token = action.payload;
@@ -103,12 +105,12 @@ const authSlice = createSlice({
           action.payload
         );
       })
-      // Gestion de l'action setUserData.fulfilled (récupération des données utilisateur réussie)
+      // Gère l'état après avoir récupéré les données de l'utilisateur avec succès
       .addCase(setUserData.fulfilled, (state, action) => {
         state.userData = action.payload;
         console.log("User data fetched successfully:", action.payload);
       })
-      // Gestion des erreurs pour toutes les actions rejetées liées à l'authentification
+      // Gère les erreurs pour toutes les actions rejetées liées à l'authentification
       .addMatcher(
         (action) =>
           action.type.endsWith("/rejected") && action.type.includes("auth"),
@@ -121,6 +123,8 @@ const authSlice = createSlice({
   },
 });
 
-// Export des actions et du reducer du slice auth
+// Exportation de l'action de déconnexion pour être utilisée dans les composants
 export const { logout } = authSlice.actions;
+
+// Exportation du réducteur pour être combiné dans le store
 export default authSlice.reducer;
